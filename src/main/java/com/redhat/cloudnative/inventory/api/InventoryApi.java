@@ -27,6 +27,8 @@ import javax.validation.constraints.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import io.micrometer.core.instrument.Metrics;
+
 @javax.annotation.Generated(value = "org.openapitools.codegen.languages.SpringCodegen", date = "2019-07-04T00:30:25.754+03:00[Asia/Riyadh]")
 
 @Validated
@@ -44,6 +46,11 @@ public interface InventoryApi {
         produces = { "application/json" }, 
         method = RequestMethod.GET)
     default ResponseEntity<List<InventoryItem>> inventoryGet() {
+        // Prometheus metric
+        Metrics.counter("api.http.requests.total", "api", "inventory", "method", "GET", "endpoint", 
+        "/inventory").increment();
+        // <<< Prometheus metric
+
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
@@ -65,6 +72,10 @@ public interface InventoryApi {
         produces = { "application/json" }, 
         method = RequestMethod.GET)
     default ResponseEntity<InventoryItem> inventoryItemIdGet(@ApiParam(value = "",required=true) @PathVariable("itemId") String itemId) {
+        // >>> Prometheus metric
+        Metrics.counter("api.http.requests.total", "api", "inventory", "method", "GET", "endpoint", 
+        "/inventory/" + itemId).increment();
+        // <<< Prometheus metric
         getRequest().ifPresent(request -> {
             for (MediaType mediaType: MediaType.parseMediaTypes(request.getHeader("Accept"))) {
                 if (mediaType.isCompatibleWith(MediaType.valueOf("application/json"))) {
