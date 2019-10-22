@@ -9,7 +9,7 @@ projects:
       type: git
       branch: master
 components:
-  - id: redhat/java11/latest
+  - id: redhat/java8/latest
     type: chePlugin
   - mountSources: true
     memoryLimit: 512Mi
@@ -18,7 +18,7 @@ components:
       - name: m2
         containerPath: /home/user/.m2
     alias: maven
-    image: 'quay.io/eclipse/che-java11-maven:7.3.0'
+    image: 'quay.io/eclipse/che-java8-maven:7.3.0'
     env:
       - value: /home/user/.m2
         name: MAVEN_CONFIG
