@@ -1,43 +1,34 @@
 ---
 apiVersion: 1.0.0
 metadata:
-  generateName: inventory-api-maven-
+  generateName: inventory-maven-
 projects:
-  - name: inventory-api-maven
+  - name: inventory-maven
     source:
-      location: 'https://github.com/cvicens/inventory-api-1st-maven'
+      location: 'https://github.com/cvicens/inventory-api-1st-maven.git'
       type: git
       branch: master
 components:
-  - id: redhat/java8/latest
+  - id: redhat/java/latest
+    memoryLimit: 1512Mi
     type: chePlugin
   - mountSources: true
-    memoryLimit: 512Mi
+    endpoints:
+      - name: 8080/tcp
+        port: 8080
+    memoryLimit: 768Mi
     type: dockerimage
     volumes:
       - name: m2
         containerPath: /home/user/.m2
-    alias: maven
+    alias: tools
     image: 'quay.io/eclipse/che-java8-maven:7.3.0'
     env:
-      - value: /home/user/.m2
-        name: MAVEN_CONFIG
       - value: >-
-          -XX:MaxRAMPercentage=50 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
+          -XX:MaxRAMPercentage=50.0 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
           -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4
           -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true
           -Xms20m -Djava.security.egd=file:/dev/./urandom -Duser.home=/home/user
-        name: MAVEN_OPTS
-      - value: >-
-          -XX:MaxRAMPercentage=50 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
-          -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4
-          -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true
-          -Xms20m -Djava.security.egd=file:/dev/./urandom
         name: JAVA_OPTS
-      - value: >-
-          -XX:MaxRAMPercentage=50 -XX:+UseParallelGC -XX:MinHeapFreeRatio=10
-          -XX:MaxHeapFreeRatio=20 -XX:GCTimeRatio=4
-          -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true
-          -Xms20m -Djava.security.egd=file:/dev/./urandom
-        name: JAVA_TOOL_OPTIONS
-apiVersion: 1.0.0
+      - value: $(JAVA_OPTS)
+        name: MAVEN_OPTS
